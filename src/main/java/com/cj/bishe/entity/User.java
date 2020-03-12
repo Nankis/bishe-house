@@ -29,8 +29,7 @@ public class User implements Serializable {
     /**
     * 收藏数
     */
-    private Integer collect;
-    
+
     private Date createdTime;
     
     private Date modifiedTime;
@@ -84,12 +83,8 @@ public class User implements Serializable {
         this.type = type;
     }
 
-    public Integer getCollect() {
-        return collect;
-    }
-
-    public void setCollect(Integer collect) {
-        this.collect = collect;
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
     }
 
     public Date getCreatedTime() {

@@ -1,5 +1,6 @@
 package com.cj.bishe.service;
 
+import com.cj.bishe.entity.House;
 import com.cj.bishe.entity.User;
 
 import java.util.List;
@@ -21,10 +22,18 @@ public interface UserService {
     User queryById(Integer id);
 
     /**
+     * 通过username查询单条数据
+     *
+     * @param userName
+     * @return
+     */
+    User queryByUserName(String userName);
+
+    /**
      * 查询多条数据
      *
      * @param offset 查询起始位置
-     * @param limit 查询条数
+     * @param limit  查询条数
      * @return 对象列表
      */
     List<User> queryAllByLimit(int offset, int limit);
@@ -52,5 +61,37 @@ public interface UserService {
      * @return 是否成功
      */
     boolean deleteById(Integer id);
+
+    /**
+     * 通过username修改用户信息
+     *
+     * @param user
+     * @return
+     */
+    User updateUserByUserName(User user);
+
+    /**
+     * 通过实体作为筛选条件查询
+     *
+     * @param user 实例对象
+     * @return 对象列表
+     */
+    List<User> queryAll(User user);
+
+    /**
+     * 获取用户当前收藏的房子
+     *
+     * @param userId
+     * @return
+     */
+    List<House> getUserCollect(Integer userId);
+
+    /**
+     * 收藏或取消收藏房子
+     *
+     * @param userId
+     * @param houseId
+     */
+    boolean collectHouse(int userId, int houseId);
 
 }

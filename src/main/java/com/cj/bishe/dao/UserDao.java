@@ -1,8 +1,8 @@
 package com.cj.bishe.dao;
 
 import com.cj.bishe.entity.User;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -23,10 +23,18 @@ public interface UserDao {
     User queryById(Integer id);
 
     /**
+     * 通过username查询单个数据
+     *
+     * @param userName
+     * @return
+     */
+    User queryByUserName(String userName);
+
+    /**
      * 查询指定行数据
      *
      * @param offset 查询起始位置
-     * @param limit 查询条数
+     * @param limit  查询条数
      * @return 对象列表
      */
     List<User> queryAllByLimit(@Param("offset") int offset, @Param("limit") int limit);
@@ -63,5 +71,13 @@ public interface UserDao {
      * @return 影响行数
      */
     int deleteById(Integer id);
+
+    /**
+     * 通过username修改用户信息
+     *
+     * @param user
+     * @return
+     */
+    int updateUserByUserName(User user);
 
 }

@@ -8,7 +8,6 @@
         <result property="pwd" column="pwd" jdbcType="VARCHAR"/>
         <result property="money" column="money" jdbcType="NUMERIC"/>
         <result property="type" column="type" jdbcType="VARCHAR"/>
-        <result property="collect" column="collect" jdbcType="INTEGER"/>
         <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
         <result property="modifiedTime" column="modified_time" jdbcType="TIMESTAMP"/>
         <result property="deleted" column="deleted" jdbcType="INTEGER"/>
@@ -19,15 +18,23 @@
     <!--查询单个-->
     <select id="queryById" resultMap="UserMap">
         select
-          id, username, pwd, money, type, collect, created_time, modified_time, deleted, status, name
+          id, username, pwd, money, type,  created_time, modified_time, deleted, status, name
         from cjhouse.user
         where id = #{id}
+    </select>
+
+    <!--查询单个-->
+    <select id="queryByUserName" resultMap="UserMap">
+        select
+          id, username, pwd, money, type, created_time, modified_time, deleted, status, name
+        from cjhouse.user
+        where username = #{username}
     </select>
 
     <!--查询指定行数据-->
     <select id="queryAllByLimit" resultMap="UserMap">
         select
-          id, username, pwd, money, type, collect, created_time, modified_time, deleted, status, name
+          id, username, pwd, money, type,  created_time, modified_time, deleted, status, name
         from cjhouse.user
         limit #{offset}, #{limit}
     </select>
@@ -35,7 +42,7 @@
     <!--通过实体作为筛选条件查询-->
     <select id="queryAll" resultMap="UserMap">
         select
-          id, username, pwd, money, type, collect, created_time, modified_time, deleted, status, name
+        id, username, pwd, money, type, created_time, modified_time, deleted, status, name
         from cjhouse.user
         <where>
             <if test="id != null">
@@ -52,9 +59,6 @@
             </if>
             <if test="type != null and type != ''">
                 and type = #{type}
-            </if>
-            <if test="collect != null">
-                and collect = #{collect}
             </if>
             <if test="createdTime != null">
                 and created_time = #{createdTime}
@@ -76,8 +80,8 @@
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">
-        insert into cjhouse.user(username, pwd, money, type, collect, created_time, modified_time, deleted, status, name)
-        values (#{username}, #{pwd}, #{money}, #{type}, #{collect}, #{createdTime}, #{modifiedTime}, #{deleted}, #{status}, #{name})
+        insert into cjhouse.user(username, pwd, money, type, created_time, modified_time, deleted, status, name)
+        values (#{username}, #{pwd}, #{money}, #{type},NOW(), #{modifiedTime}, 0, 0, #{name})
     </insert>
 
     <!--通过主键修改数据-->
@@ -96,14 +100,32 @@
             <if test="type != null and type != ''">
                 type = #{type},
             </if>
-            <if test="collect != null">
-                collect = #{collect},
+            <if test="deleted != null">
+                deleted = #{deleted},
             </if>
-            <if test="createdTime != null">
-                created_time = #{createdTime},
+            <if test="status != null">
+                status = #{status},
             </if>
-            <if test="modifiedTime != null">
-                modified_time = #{modifiedTime},
+            <if test="name != null and name != ''">
+                name = #{name},
+            </if>
+            modified_time = NOW()
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过用户名修改数据-->
+    <update id="updateUserByUserName">
+        update cjhouse.user
+        <set>
+            <if test="pwd != null and pwd != ''">
+                pwd = #{pwd},
+            </if>
+            <if test="money != null">
+                money = #{money},
+            </if>
+            <if test="type != null and type != ''">
+                type = #{type},
             </if>
             <if test="deleted != null">
                 deleted = #{deleted},
@@ -114,8 +136,9 @@
             <if test="name != null and name != ''">
                 name = #{name},
             </if>
+            modified_time = NOW()
         </set>
-        where id = #{id}
+        where username = #{username}
     </update>
 
     <!--通过主键删除-->

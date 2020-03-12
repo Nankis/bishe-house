@@ -7,6 +7,9 @@ public enum ResultMsgEnum {
     NOT_PERMISSION("601", "没有权限"),
     NOT_LOGIN("600", "请登录"),
     SYS_ERROR("606", "系统异常"),
+    NOTICE_EXIST_USER("111", "用户已存在"),
+    NOTICE_NOT_EXIST_USER("112", "用户不存在"),
+    NOTICE_NOT_EXIST_HOUSE("112", "房子不存在"),
     ;
 
     private String code;

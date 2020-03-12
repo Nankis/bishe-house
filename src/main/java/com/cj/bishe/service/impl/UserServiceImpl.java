@@ -1,11 +1,21 @@
 package com.cj.bishe.service.impl;
 
+import com.cj.bishe.controller.UserController;
+import com.cj.bishe.entity.Collect;
+import com.cj.bishe.entity.House;
 import com.cj.bishe.entity.User;
 import com.cj.bishe.dao.UserDao;
+import com.cj.bishe.service.CollectService;
+import com.cj.bishe.service.HouseService;
 import com.cj.bishe.service.UserService;
+import com.cj.bishe.entity.vo.HouseCollectVO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,8 +26,15 @@ import java.util.List;
  */
 @Service("userService")
 public class UserServiceImpl implements UserService {
+    private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
     @Resource
     private UserDao userDao;
+
+    @Resource
+    private CollectService collectService;
+
+    @Resource
+    private HouseService houseService;
 
     /**
      * 通过ID查询单条数据
@@ -34,7 +51,7 @@ public class UserServiceImpl implements UserService {
      * 查询多条数据
      *
      * @param offset 查询起始位置
-     * @param limit 查询条数
+     * @param limit  查询条数
      * @return 对象列表
      */
     @Override
@@ -53,6 +70,12 @@ public class UserServiceImpl implements UserService {
         this.userDao.insert(user);
         return user;
     }
+
+    @Override
+    public User queryByUserName(String userName) {
+        return this.userDao.queryByUserName(userName);
+    }
+
 
     /**
      * 修改数据
@@ -75,5 +98,68 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean deleteById(Integer id) {
         return this.userDao.deleteById(id) > 0;
+    }
+
+    /**
+     * 更新用户数据
+     *
+     * @param user
+     * @return
+     */
+    @Override
+    public User updateUserByUserName(User user) {
+        this.userDao.updateUserByUserName(user);
+        return this.queryByUserName(user.getUsername());
+    }
+
+    @Override
+    public List<User> queryAll(User user) {
+        return userDao.queryAll(user);
+    }
+
+    /**
+     * 获取用户当前收藏的房子
+     *
+     * @param userId
+     * @return
+     */
+
+    @Override
+    public List<House> getUserCollect(Integer userId) {
+        Collect collect = new Collect();
+        List<House> resHouse = new ArrayList<>();
+        collect.setUserId(userId);
+        List<Collect> collects = collectService.queryAll(collect);
+        for (Collect v : collects) {
+            //获取该用户收藏的所有house
+            resHouse.add(houseService.queryById(v.getHouseId()));
+        }
+        return resHouse;
+    }
+
+    /**
+     * 收藏或取消收藏用户指定的房子
+     *
+     * @param userId
+     * @param houseId
+     * @return
+     */
+    @Transactional
+    @Override
+    public boolean collectHouse(int userId, int houseId) {
+        Collect collect = new Collect();
+        collect.setUserId(userId);
+        collect.setHouseId(houseId);
+        Collect isCollected = collectService.queryByUserIdAndHouseId(userId, houseId);
+        if (isCollected == null) {
+            //未被收藏过，则重新收藏
+            collectService.insert(collect);
+            logger.info("收藏成功" + "userId:" + userId + "houseId:" + houseId);
+        } else {
+            //收藏过，则物理删除
+            collectService.deleteById(isCollected.getId());
+            logger.info("取消收藏成功" + "userId:" + userId + "houseId:" + houseId);
+        }
+        return true;
     }
 }
