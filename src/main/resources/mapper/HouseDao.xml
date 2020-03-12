@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cj.bishe.dao.HouseDao">
+
+    <resultMap type="com.cj.bishe.entity.House" id="HouseMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="init" column="init" jdbcType="VARCHAR"/>
+        <result property="province" column="province" jdbcType="VARCHAR"/>
+        <result property="city" column="city" jdbcType="VARCHAR"/>
+        <result property="sub" column="sub" jdbcType="VARCHAR"/>
+        <result property="price" column="price" jdbcType="NUMERIC"/>
+        <result property="type" column="type" jdbcType="VARCHAR"/>
+        <result property="master" column="master" jdbcType="VARCHAR"/>
+        <result property="area" column="area" jdbcType="VARCHAR"/>
+        <result property="img" column="img" jdbcType="VARCHAR"/>
+        <result property="pubTime" column="pub_time" jdbcType="TIMESTAMP"/>
+        <result property="collectNum" column="collect_num" jdbcType="INTEGER"/>
+        <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+        <result property="modifiedTime" column="modified_time" jdbcType="TIMESTAMP"/>
+        <result property="deleted" column="deleted" jdbcType="INTEGER"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="houseName" column="house_name" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="HouseMap">
+        select
+          id, init, province, city, sub, price, type, master, area, img, pub_time, collect_num, created_time, modified_time, deleted, status, house_name
+        from cjhouse.house
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="HouseMap">
+        select
+          id, init, province, city, sub, price, type, master, area, img, pub_time, collect_num, created_time, modified_time, deleted, status, house_name
+        from cjhouse.house
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="HouseMap">
+        select
+          id, init, province, city, sub, price, type, master, area, img, pub_time, collect_num, created_time, modified_time, deleted, status, house_name
+        from cjhouse.house
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="init != null and init != ''">
+                and init = #{init}
+            </if>
+            <if test="province != null and province != ''">
+                and province = #{province}
+            </if>
+            <if test="city != null and city != ''">
+                and city = #{city}
+            </if>
+            <if test="sub != null and sub != ''">
+                and sub = #{sub}
+            </if>
+            <if test="price != null">
+                and price = #{price}
+            </if>
+            <if test="type != null and type != ''">
+                and type = #{type}
+            </if>
+            <if test="master != null and master != ''">
+                and master = #{master}
+            </if>
+            <if test="area != null and area != ''">
+                and area = #{area}
+            </if>
+            <if test="img != null and img != ''">
+                and img = #{img}
+            </if>
+            <if test="pubTime != null">
+                and pub_time = #{pubTime}
+            </if>
+            <if test="collectNum != null">
+                and collect_num = #{collectNum}
+            </if>
+            <if test="createdTime != null">
+                and created_time = #{createdTime}
+            </if>
+            <if test="modifiedTime != null">
+                and modified_time = #{modifiedTime}
+            </if>
+            <if test="deleted != null">
+                and deleted = #{deleted}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="houseName != null and houseName != ''">
+                and house_name = #{houseName}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into cjhouse.house(init, province, city, sub, price, type, master, area, img, pub_time, collect_num, created_time, modified_time, deleted, status, house_name)
+        values (#{init}, #{province}, #{city}, #{sub}, #{price}, #{type}, #{master}, #{area}, #{img}, #{pubTime}, #{collectNum}, #{createdTime}, #{modifiedTime}, #{deleted}, #{status}, #{houseName})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update cjhouse.house
+        <set>
+            <if test="init != null and init != ''">
+                init = #{init},
+            </if>
+            <if test="province != null and province != ''">
+                province = #{province},
+            </if>
+            <if test="city != null and city != ''">
+                city = #{city},
+            </if>
+            <if test="sub != null and sub != ''">
+                sub = #{sub},
+            </if>
+            <if test="price != null">
+                price = #{price},
+            </if>
+            <if test="type != null and type != ''">
+                type = #{type},
+            </if>
+            <if test="master != null and master != ''">
+                master = #{master},
+            </if>
+            <if test="area != null and area != ''">
+                area = #{area},
+            </if>
+            <if test="img != null and img != ''">
+                img = #{img},
+            </if>
+            <if test="pubTime != null">
+                pub_time = #{pubTime},
+            </if>
+            <if test="collectNum != null">
+                collect_num = #{collectNum},
+            </if>
+            <if test="createdTime != null">
+                created_time = #{createdTime},
+            </if>
+            <if test="modifiedTime != null">
+                modified_time = #{modifiedTime},
+            </if>
+            <if test="deleted != null">
+                deleted = #{deleted},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="houseName != null and houseName != ''">
+                house_name = #{houseName},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from cjhouse.house where id = #{id}
+    </delete>
+
+</mapper>

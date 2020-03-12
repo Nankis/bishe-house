@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cj.bishe.dao.CollectDao">
+
+    <resultMap type="com.cj.bishe.entity.Collect" id="CollectMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="userId" column="user_id" jdbcType="INTEGER"/>
+        <result property="houseId" column="house_id" jdbcType="INTEGER"/>
+        <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+        <result property="modifiedTime" column="modified_time" jdbcType="TIMESTAMP"/>
+        <result property="deleted" column="deleted" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="VARCHAR"/>
+    </resultMap>
+
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="CollectMap">
+        select
+          id, user_id, house_id, created_time, modified_time, deleted, status
+        from cjhouse.collect
+        where id = #{id}
+    </select>
+
+    <select id="queryByUserIdAndHouseId" resultMap="CollectMap">
+        select
+          id, user_id, house_id, created_time, modified_time, deleted, status
+        from cjhouse.collect
+        where user_id = #{userId} and house_id = #{houseId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="CollectMap">
+        select
+          id, user_id, house_id, created_time, modified_time, deleted, status
+        from cjhouse.collect
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="CollectMap">
+        select
+        id, user_id, house_id, created_time, modified_time, deleted, status
+        from cjhouse.collect
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="houseId != null">
+                and house_id = #{houseId}
+            </if>
+            <if test="createdTime != null">
+                and created_time = #{createdTime}
+            </if>
+            <if test="modifiedTime != null">
+                and modified_time = #{modifiedTime}
+            </if>
+            <if test="deleted != null and deleted != ''">
+                and deleted = #{deleted}
+            </if>
+            <if test="status != null and status != ''">
+                and status = #{status}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into cjhouse.collect(user_id, house_id, created_time, modified_time, deleted, status)
+        values (#{userId}, #{houseId}, NOW(), #{modifiedTime}, 0, 0)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update cjhouse.collect
+        <set>
+            <if test="userId != null">
+                user_id = #{userId},
+            </if>
+            <if test="houseId != null">
+                house_id = #{houseId},
+            </if>
+            <if test="createdTime != null">
+                created_time = #{createdTime},
+            </if>
+            <if test="modifiedTime != null">
+                modified_time = #{modifiedTime},
+            </if>
+            <if test="deleted != null and deleted != ''">
+                deleted = #{deleted},
+            </if>
+            <if test="status != null and status != ''">
+                status = #{status},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from cjhouse.collect where id = #{id}
+    </delete>
+
+
+</mapper>
