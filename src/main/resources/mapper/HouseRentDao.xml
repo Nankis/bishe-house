@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cj.bishe.dao.HouseRentDao">
+
+    <resultMap type="com.cj.bishe.entity.HouseRent" id="HouseRentMap">
+        <result property="houseId" column="House_id" jdbcType="INTEGER"/>
+        <result property="userId" column="User_id" jdbcType="INTEGER"/>
+        <result property="adminId" column="Admin_id" jdbcType="INTEGER"/>
+        <result property="houseTitle" column="House_title" jdbcType="VARCHAR"/>
+        <result property="houseRent" column="House_rent" jdbcType="NUMERIC"/>
+        <result property="housePledge" column="House_pledge" jdbcType="NUMERIC"/>
+        <result property="houseMonths" column="House_months" jdbcType="INTEGER"/>
+        <result property="houseAddress" column="House_address" jdbcType="VARCHAR"/>
+        <result property="houseShape" column="House_shape" jdbcType="VARCHAR"/>
+        <result property="houseDirection" column="House_direction" jdbcType="VARCHAR"/>
+        <result property="houseArea" column="House_area" jdbcType="VARCHAR"/>
+        <result property="houseFloor" column="House_floor" jdbcType="VARCHAR"/>
+        <result property="houseDetail" column="House_detail" jdbcType="VARCHAR"/>
+        <result property="houseJwd" column="House_jwd" jdbcType="VARCHAR"/>
+        <result property="houseIsrented" column="House_isRented" jdbcType="VARCHAR"/>
+        <result property="houseCoverpic" column="House_coverPic" jdbcType="VARCHAR"/>
+        <result property="housePiclist" column="House_picList" jdbcType="VARCHAR"/>
+        <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+        <result property="updatedTime" column="updated_time" jdbcType="TIMESTAMP"/>
+        <result property="status" column="status" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="HouseRentMap">
+        select
+          House_id, User_id, Admin_id, House_title, House_rent, House_pledge, House_months, House_address, House_shape, House_direction, House_area, House_floor, House_detail, House_jwd, House_isRented, House_coverPic, House_picList, created_time, updated_time, status
+        from cjhouse.house_rent
+        where House_id = #{houseId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="HouseRentMap">
+        select
+          House_id, User_id, Admin_id, House_title, House_rent, House_pledge, House_months, House_address, House_shape, House_direction, House_area, House_floor, House_detail, House_jwd, House_isRented, House_coverPic, House_picList, created_time, updated_time, status
+        from cjhouse.house_rent
+        limit #{offset}, #{limit}
+    </select>
+
+    <select id="queryAllByRentOrMonths" resultMap="HouseRentMap">
+        select
+          House_id, User_id, Admin_id, House_title, House_rent, House_pledge, House_months, House_address, House_shape, House_direction, House_area, House_floor, House_detail, House_jwd, House_isRented, House_coverPic, House_picList, created_time, updated_time, status
+        from cjhouse.house_rent
+        where
+        House_rent BETWEEN #{rent1} AND #{rent2}
+         AND
+        house_months BETWEEN #{month1} AND #{month2}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="HouseRentMap">
+        select
+        House_id, User_id, Admin_id, House_title, House_rent, House_pledge, House_months, House_address, House_shape,
+        House_direction, House_area, House_floor, House_detail, House_jwd, House_isRented, House_coverPic,
+        House_picList, created_time, updated_time, status
+        from cjhouse.house_rent
+        <where>
+            <if test="houseId != null">
+                and House_id = #{houseId}
+            </if>
+            <if test="userId != null">
+                and User_id = #{userId}
+            </if>
+            <if test="adminId != null">
+                and Admin_id = #{adminId}
+            </if>
+            <if test="houseTitle != null and houseTitle != ''">
+                and House_title = #{houseTitle}
+            </if>
+            <if test="houseRent != null">
+                and House_rent = #{houseRent}
+            </if>
+            <if test="housePledge != null">
+                and House_pledge = #{housePledge}
+            </if>
+            <if test="houseMonths != null">
+                and House_months = #{houseMonths}
+            </if>
+            <if test="houseAddress != null and houseAddress != ''">
+                and House_address = #{houseAddress}
+            </if>
+            <if test="houseShape != null and houseShape != ''">
+                and House_shape = #{houseShape}
+            </if>
+            <if test="houseDirection != null and houseDirection != ''">
+                and House_direction = #{houseDirection}
+            </if>
+            <if test="houseArea != null and houseArea != ''">
+                and House_area = #{houseArea}
+            </if>
+            <if test="houseFloor != null and houseFloor != ''">
+                and House_floor = #{houseFloor}
+            </if>
+            <if test="houseDetail != null and houseDetail != ''">
+                and House_detail = #{houseDetail}
+            </if>
+            <if test="houseJwd != null and houseJwd != ''">
+                and House_jwd = #{houseJwd}
+            </if>
+            <if test="houseIsrented != null and houseIsrented != ''">
+                and House_isRented = #{houseIsrented}
+            </if>
+            <if test="houseCoverpic != null and houseCoverpic != ''">
+                and House_coverPic = #{houseCoverpic}
+            </if>
+            <if test="housePiclist != null and housePiclist != ''">
+                and House_picList = #{housePiclist}
+            </if>
+            <if test="createdTime != null">
+                and created_time = #{createdTime}
+            </if>
+            <if test="updatedTime != null">
+                and updated_time = #{updatedTime}
+            </if>
+            <if test="status != null and status != ''">
+                and status = #{status}
+            </if>
+        </where>
+    </select>
+
+    <select id="queryAllByConditions" resultMap="HouseRentMap">
+        select
+        House_id, User_id, Admin_id, House_title, House_rent, House_pledge, House_months, House_address, House_shape,
+        House_direction, House_area, House_floor, House_detail, House_jwd, House_isRented, House_coverPic,
+        House_picList, created_time, updated_time, status
+        from cjhouse.house_rent
+        <where>
+            <if test="houseId != null">
+                and House_id = #{houseId}
+            </if>
+            <if test="userId != null">
+                and User_id = #{userId}
+            </if>
+            <if test="adminId != null">
+                and Admin_id = #{adminId}
+            </if>
+            <if test="houseTitle != null and houseTitle != ''">
+                and House_title LIKE #{houseTitle}
+            </if>
+            <if test="houseRent != null">
+                and House_rent = #{houseRent}
+            </if>
+            <if test="housePledge != null">
+                and House_pledge = #{housePledge}
+            </if>
+            <if test="houseMonths != null">
+                and House_months = #{houseMonths}
+            </if>
+            <if test="houseAddress != null and houseAddress != ''">
+                and House_address = #{houseAddress}
+            </if>
+            <if test="houseShape != null and houseShape != ''">
+                and House_shape LIKE #{houseShape}
+            </if>
+            <if test="houseDirection != null and houseDirection != ''">
+                and House_direction = #{houseDirection}
+            </if>
+            <if test="houseArea != null and houseArea != ''">
+                and House_area = #{houseArea}
+            </if>
+            <if test="houseFloor != null and houseFloor != ''">
+                and House_floor = #{houseFloor}
+            </if>
+            <if test="houseDetail != null and houseDetail != ''">
+                and House_detail = #{houseDetail}
+            </if>
+            <if test="houseJwd != null and houseJwd != ''">
+                and House_jwd = #{houseJwd}
+            </if>
+            <if test="houseIsrented != null and houseIsrented != ''">
+                and House_isRented = #{houseIsrented}
+            </if>
+            <if test="houseCoverpic != null and houseCoverpic != ''">
+                and House_coverPic = #{houseCoverpic}
+            </if>
+            <if test="housePiclist != null and housePiclist != ''">
+                and House_picList = #{housePiclist}
+            </if>
+            <if test="createdTime != null">
+                and created_time = #{createdTime}
+            </if>
+            <if test="updatedTime != null">
+                and updated_time = #{updatedTime}
+            </if>
+            <if test="status != null and status != ''">
+                and status = #{status}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="houseId" useGeneratedKeys="true">
+        insert into cjhouse.house_rent(User_id, Admin_id, House_title, House_rent, House_pledge, House_months, House_address, House_shape, House_direction, House_area, House_floor, House_detail, House_jwd, House_isRented, House_coverPic, House_picList, created_time, updated_time, status)
+        values (#{userId}, #{adminId}, #{houseTitle}, #{houseRent}, #{housePledge}, #{houseMonths}, #{houseAddress}, #{houseShape}, #{houseDirection}, #{houseArea}, #{houseFloor}, #{houseDetail}, #{houseJwd}, #{houseIsrented}, #{houseCoverpic}, #{housePiclist}, #{createdTime}, #{updatedTime}, #{status})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update cjhouse.house_rent
+        <set>
+            <if test="userId != null">
+                User_id = #{userId},
+            </if>
+            <if test="adminId != null">
+                Admin_id = #{adminId},
+            </if>
+            <if test="houseTitle != null and houseTitle != ''">
+                House_title = #{houseTitle},
+            </if>
+            <if test="houseRent != null">
+                House_rent = #{houseRent},
+            </if>
+            <if test="housePledge != null">
+                House_pledge = #{housePledge},
+            </if>
+            <if test="houseMonths != null">
+                House_months = #{houseMonths},
+            </if>
+            <if test="houseAddress != null and houseAddress != ''">
+                House_address = #{houseAddress},
+            </if>
+            <if test="houseShape != null and houseShape != ''">
+                House_shape = #{houseShape},
+            </if>
+            <if test="houseDirection != null and houseDirection != ''">
+                House_direction = #{houseDirection},
+            </if>
+            <if test="houseArea != null and houseArea != ''">
+                House_area = #{houseArea},
+            </if>
+            <if test="houseFloor != null and houseFloor != ''">
+                House_floor = #{houseFloor},
+            </if>
+            <if test="houseDetail != null and houseDetail != ''">
+                House_detail = #{houseDetail},
+            </if>
+            <if test="houseJwd != null and houseJwd != ''">
+                House_jwd = #{houseJwd},
+            </if>
+            <if test="houseIsrented != null and houseIsrented != ''">
+                House_isRented = #{houseIsrented},
+            </if>
+            <if test="houseCoverpic != null and houseCoverpic != ''">
+                House_coverPic = #{houseCoverpic},
+            </if>
+            <if test="housePiclist != null and housePiclist != ''">
+                House_picList = #{housePiclist},
+            </if>
+            <if test="createdTime != null">
+                created_time = #{createdTime},
+            </if>
+            <if test="updatedTime != null">
+                updated_time = #{updatedTime},
+            </if>
+            <if test="status != null and status != ''">
+                status = #{status},
+            </if>
+        </set>
+        where House_id = #{houseId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from cjhouse.house_rent where House_id = #{houseId}
+    </delete>
+
+</mapper>

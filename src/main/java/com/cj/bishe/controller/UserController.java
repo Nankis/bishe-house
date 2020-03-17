@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**
@@ -22,6 +24,7 @@ import java.util.List;
  * @author makejava
  * @since 2020-03-01 17:53:30
  */
+@CrossOrigin
 @RestController
 @RequestMapping("user")
 public class UserController {
@@ -59,13 +62,17 @@ public class UserController {
      * @return
      */
     @RequestMapping("addUser")
-    public HttpResult addUser(String reqData) {
+    public HttpResult addUser(@RequestBody String reqData) throws UnsupportedEncodingException {
         logger.info("addUser reqData:{}", reqData);
         if (StringUtils.isBlank(reqData)) {
             return HttpResult.fail(ResultMsgEnum.ILLEGAL_ARGS);
         }
+        String result = java.net.URLDecoder.decode(reqData, StandardCharsets.UTF_8.name());
+        System.out.println(result.replace("user=", ""));
+        JSONObject jsonObject = JSONObject.parseObject(result.replace("user=", ""));
+        String userStr = jsonObject.toString();
         //根据前端传的参数生成一个user
-        User user = JSONObject.parseObject(reqData, User.class);
+        User user = JSONObject.parseObject(userStr, User.class);
 
         //根据该用户名判断用户是否存在
         if (userService.queryByUserName(user.getUsername()) != null) {
@@ -74,19 +81,39 @@ public class UserController {
         return HttpResult.success(userService.insert(user));
     }
 
+    @RequestMapping("login")
+    public HttpResult login(@RequestBody String data) {
+        String[] res = data.split("&");
+        String username = res[0].replace("loginInfo=", "");
+        String pwd = res[1].replace("user_pwd=", "");
+        User user = userService.queryByUserName(username);
+        if (user == null) {
+            return HttpResult.fail(ResultMsgEnum.NOTICE_NOT_EXIST_USER);
+        } else if (!pwd.equals(user.getPwd())) {
+            return HttpResult.fail("999", "密码错误");
+        }
+        return HttpResult.success(user);
+    }
+
     @RequestMapping("updateUser")
-    public HttpResult updateUser(String reqData) {
+    public HttpResult updateUser(@RequestBody String reqData) {
         logger.info("updateUser reqData:{}", reqData);
         if (StringUtils.isBlank(reqData)) {
             return HttpResult.fail(ResultMsgEnum.ILLEGAL_ARGS);
         }
+        String[] res = reqData.split("&");
+        String username = res[0].replace("username=", "");
+        String pwd = res[1].replace("password=", "");
+        User user = userService.queryByUserName(username);
+
         //根据前端传的参数生成一个user
-        User user = JSONObject.parseObject(reqData, User.class);
+//        User user = JSONObject.parseObject(reqData, User.class);
 
         //根据该用户名判断用户是否存在
         if (userService.queryByUserName(user.getUsername()) == null) {
             return HttpResult.fail(ResultMsgEnum.NOTICE_NOT_EXIST_USER);
         }
+        user.setPwd(pwd);
         return HttpResult.success(userService.updateUserByUserName(user));
     }
 

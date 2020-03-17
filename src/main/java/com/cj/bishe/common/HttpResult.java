@@ -9,6 +9,7 @@ public class HttpResult<T> implements Serializable {
 
     private boolean success;
     private T data;
+    private int Total; //分页封装
     private String code;
     private String msg;
 
@@ -33,6 +34,21 @@ public class HttpResult<T> implements Serializable {
         HttpResult<T> httpResult = success();
         httpResult.setData(data);
         return httpResult;
+    }
+
+    public static <T> HttpResult<T> successForPage(T Data,int Total) {
+        HttpResult<T> httpResult = success();
+        httpResult.setData(Data);
+        httpResult.setTotal(Total);
+        return httpResult;
+    }
+
+    public int getTotal() {
+        return Total;
+    }
+
+    public void setTotal(int total) {
+        Total = total;
     }
 
     public static <T> HttpResult<T> fail(String code, String message) {

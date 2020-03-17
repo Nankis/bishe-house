@@ -13,7 +13,6 @@
     </resultMap>
 
 
-    <!--查询单个-->
     <select id="queryById" resultMap="CollectMap">
         select
           id, user_id, house_id, created_time, modified_time, deleted, status
@@ -28,7 +27,6 @@
         where user_id = #{userId} and house_id = #{houseId}
     </select>
 
-    <!--查询指定行数据-->
     <select id="queryAllByLimit" resultMap="CollectMap">
         select
           id, user_id, house_id, created_time, modified_time, deleted, status
@@ -36,7 +34,6 @@
         limit #{offset}, #{limit}
     </select>
 
-    <!--通过实体作为筛选条件查询-->
     <select id="queryAll" resultMap="CollectMap">
         select
         id, user_id, house_id, created_time, modified_time, deleted, status
@@ -66,13 +63,11 @@
         </where>
     </select>
 
-    <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">
         insert into cjhouse.collect(user_id, house_id, created_time, modified_time, deleted, status)
         values (#{userId}, #{houseId}, NOW(), #{modifiedTime}, 0, 0)
     </insert>
 
-    <!--通过主键修改数据-->
     <update id="update">
         update cjhouse.collect
         <set>
@@ -98,7 +93,6 @@
         where id = #{id}
     </update>
 
-    <!--通过主键删除-->
     <delete id="deleteById">
         delete from cjhouse.collect where id = #{id}
     </delete>

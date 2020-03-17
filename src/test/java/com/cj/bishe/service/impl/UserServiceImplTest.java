@@ -1,5 +1,7 @@
 package com.cj.bishe.service.impl;
 
+import com.cj.App;
+import com.cj.bishe.common.UploadUtils;
 import com.cj.bishe.entity.Collect;
 import com.cj.bishe.entity.House;
 import com.cj.bishe.entity.User;
@@ -9,13 +11,17 @@ import com.cj.bishe.service.UserService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
 import java.util.List;
 
-@SpringBootTest
 @RunWith(SpringRunner.class)
+@SpringBootTest(classes = App.class)
+//@ContextConfiguration(locations={"classpath:**/application.properties"})
+@PropertySource(value = { "classpath:application.properties" })//加载配置文件
 public class UserServiceImplTest {
 
     @Resource
@@ -31,6 +37,7 @@ public class UserServiceImplTest {
 //        for (House v : userCollect) {
 //            System.err.println(v.getHouseName());
 //        }
+//        UploadUtils.upload();
         System.err.println(userService.collectHouse(2, 2));
     }
 

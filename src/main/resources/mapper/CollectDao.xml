@@ -12,6 +12,7 @@
         <result property="status" column="status" jdbcType="VARCHAR"/>
     </resultMap>
 
+
     <select id="queryById" resultMap="CollectMap">
         select
           id, user_id, house_id, created_time, modified_time, deleted, status
@@ -25,7 +26,6 @@
         from cjhouse.collect
         where user_id = #{userId} and house_id = #{houseId}
     </select>
-
 
     <select id="queryAllByLimit" resultMap="CollectMap">
         select
@@ -80,13 +80,15 @@
             <if test="createdTime != null">
                 created_time = #{createdTime},
             </if>
+            <if test="modifiedTime != null">
+                modified_time = #{modifiedTime},
+            </if>
             <if test="deleted != null and deleted != ''">
                 deleted = #{deleted},
             </if>
             <if test="status != null and status != ''">
                 status = #{status},
             </if>
-            modified_time = NOW()
         </set>
         where id = #{id}
     </update>
@@ -94,5 +96,6 @@
     <delete id="deleteById">
         delete from cjhouse.collect where id = #{id}
     </delete>
+
 
 </mapper>
