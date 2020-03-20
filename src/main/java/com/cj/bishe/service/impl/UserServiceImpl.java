@@ -1,14 +1,12 @@
 package com.cj.bishe.service.impl;
 
-import com.cj.bishe.controller.UserController;
 import com.cj.bishe.entity.Collect;
-import com.cj.bishe.entity.House;
+import com.cj.bishe.entity.HouseRent;
 import com.cj.bishe.entity.User;
 import com.cj.bishe.dao.UserDao;
 import com.cj.bishe.service.CollectService;
-import com.cj.bishe.service.HouseService;
+import com.cj.bishe.service.HouseRentService;
 import com.cj.bishe.service.UserService;
-import com.cj.bishe.entity.vo.HouseCollectVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -34,7 +32,8 @@ public class UserServiceImpl implements UserService {
     private CollectService collectService;
 
     @Resource
-    private HouseService houseService;
+    private HouseRentService houseRentService;
+
 
     /**
      * 通过ID查询单条数据
@@ -125,14 +124,14 @@ public class UserServiceImpl implements UserService {
      */
 
     @Override
-    public List<House> getUserCollect(Integer userId) {
+    public List<HouseRent> getUserCollect(Integer userId) {
         Collect collect = new Collect();
-        List<House> resHouse = new ArrayList<>();
+        List<HouseRent> resHouse = new ArrayList<>();
         collect.setUserId(userId);
         List<Collect> collects = collectService.queryAll(collect);
         for (Collect v : collects) {
             //获取该用户收藏的所有house
-            resHouse.add(houseService.queryById(v.getHouseId()));
+            resHouse.add(houseRentService.queryById(v.getHouseId()));
         }
         return resHouse;
     }

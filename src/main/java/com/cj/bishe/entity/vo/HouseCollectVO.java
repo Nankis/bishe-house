@@ -1,9 +1,6 @@
 package com.cj.bishe.entity.vo;
 
-import com.cj.bishe.entity.House;
-
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * 用于给前端显示用户收藏房子数据的类

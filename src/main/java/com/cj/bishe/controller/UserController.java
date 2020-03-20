@@ -3,13 +3,11 @@ package com.cj.bishe.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.cj.bishe.common.HttpResult;
 import com.cj.bishe.entity.Collect;
-import com.cj.bishe.entity.House;
 import com.cj.bishe.entity.HouseRent;
 import com.cj.bishe.entity.User;
 import com.cj.bishe.enums.ResultMsgEnum;
 import com.cj.bishe.service.CollectService;
 import com.cj.bishe.service.HouseRentService;
-import com.cj.bishe.service.HouseService;
 import com.cj.bishe.service.UserService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -39,8 +37,6 @@ public class UserController {
     @Resource
     private UserService userService;
 
-    @Resource
-    private HouseService houseService;
 
     @Resource
     private HouseRentService houseRentService;
@@ -142,7 +138,7 @@ public class UserController {
         if (user == null) {
             return HttpResult.fail(ResultMsgEnum.NOTICE_NOT_EXIST_USER);
         }
-        List<House> userCollect = userService.getUserCollect(user.getId());
+        List<HouseRent> userCollect = userService.getUserCollect(user.getId());
         return HttpResult.success(userCollect);
     }
 
@@ -152,7 +148,7 @@ public class UserController {
         if (user == null) {
             return HttpResult.fail(ResultMsgEnum.NOTICE_NOT_EXIST_USER);
         }
-        House house = houseService.queryById(houseId);
+        HouseRent house = houseRentService.queryById(houseId);
         if (house == null) {
             return HttpResult.fail(ResultMsgEnum.NOTICE_NOT_EXIST_HOUSE);
         }

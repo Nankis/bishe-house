@@ -1,6 +1,6 @@
 package com.cj.bishe.service;
 
-import com.cj.bishe.entity.House;
+import com.cj.bishe.entity.HouseRent;
 import com.cj.bishe.entity.User;
 
 import java.util.List;
@@ -84,7 +84,7 @@ public interface UserService {
      * @param userId
      * @return
      */
-    List<House> getUserCollect(Integer userId);
+    List<HouseRent> getUserCollect(Integer userId);
 
     /**
      * 收藏或取消收藏房子
