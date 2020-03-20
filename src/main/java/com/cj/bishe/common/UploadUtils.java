@@ -6,6 +6,7 @@ import com.qiniu.http.Response;
 import com.qiniu.storage.Configuration;
 import com.qiniu.storage.UploadManager;
 import com.qiniu.util.Auth;
+import com.qiniu.util.StringMap;
 
 import java.io.IOException;
 
@@ -44,14 +45,27 @@ public class UploadUtils {
 //        new UploadUtils().upload();
 //    }
 
+    /**
+     * 生成上传token
+     *
+     * @param bucket  空间名
+     * @param key     key，可为 null
+     * @param expires 有效时长，单位秒
+     * @param policy  上传策略的其它参数，如 new StringMap().put("endUser", "uid").putNotEmpty("returnBody", "")。
+     *                scope通过 bucket、key间接设置，deadline 通过 expires 间接设置
+     * @return 生成的上传token
+     */
     //简单上传，使用默认策略，只需要设置上传的空间名就可以了
     public static String getUpToken() {
-        return auth.uploadToken(bucketname);
+        long   expires = 3160000L;
+        StringMap policy = new StringMap();
+        return auth.uploadToken(bucketname,null,expires,policy);
     }
 
     public static String upload() throws IOException {
         try {
             //调用put方法上传
+            System.err.println(getUpToken());
             Response res = uploadManager.put(FilePath, key, getUpToken());
             //打印返回的信息
             System.out.println(res.bodyString());
@@ -69,5 +83,9 @@ public class UploadUtils {
             }
         }
         return preUrl + key;
+    }
+
+    public static void main(String[] args) throws IOException {
+        UploadUtils.upload();
     }
 }

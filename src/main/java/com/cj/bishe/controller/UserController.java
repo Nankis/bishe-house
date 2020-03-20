@@ -2,9 +2,13 @@ package com.cj.bishe.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.cj.bishe.common.HttpResult;
+import com.cj.bishe.entity.Collect;
 import com.cj.bishe.entity.House;
+import com.cj.bishe.entity.HouseRent;
 import com.cj.bishe.entity.User;
 import com.cj.bishe.enums.ResultMsgEnum;
+import com.cj.bishe.service.CollectService;
+import com.cj.bishe.service.HouseRentService;
 import com.cj.bishe.service.HouseService;
 import com.cj.bishe.service.UserService;
 import org.apache.commons.lang3.StringUtils;
@@ -16,13 +20,14 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * (User)表控制层
  *
  * @author makejava
- * @since 2020-03-01 17:53:30
+ * @since 2020-03-11 17:53:30
  */
 @CrossOrigin
 @RestController
@@ -36,6 +41,12 @@ public class UserController {
 
     @Resource
     private HouseService houseService;
+
+    @Resource
+    private HouseRentService houseRentService;
+
+    @Resource
+    private CollectService collectService;
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
@@ -147,5 +158,218 @@ public class UserController {
         }
         boolean res = userService.collectHouse(userId, houseId);
         return HttpResult.success(res);
+    }
+
+    /**
+     * 查看该用户已租的房源
+     *
+     * @param reqData
+     * @return
+     */
+    @RequestMapping("getRentHouse")
+    public HttpResult getRentHouse(@RequestBody String reqData) throws UnsupportedEncodingException {
+        String result = java.net.URLDecoder.decode(reqData, StandardCharsets.UTF_8.name());
+        String userId = result.replace("user_id=", "");
+        HouseRent houseRent = new HouseRent();
+        houseRent.setUserId(Integer.parseInt(userId));
+        List<HouseRent> houseRents = houseRentService.queryAll(houseRent);
+        return HttpResult.successForPage(houseRents, houseRents.size());
+    }
+
+
+    /**
+     * 用户主动退租
+     *
+     * @param reqData
+     * @return
+     */
+    @RequestMapping("removeRentHouse")
+    public HttpResult removeRentHouse(@RequestBody String reqData) throws UnsupportedEncodingException {
+        String result = java.net.URLDecoder.decode(reqData, StandardCharsets.UTF_8.name());
+        System.out.println(result);
+        String houseId_str = result.replace("house_id=", "");
+        String[] split = houseId_str.split(",");
+        HouseRent houseRent = new HouseRent();
+        for (String v : split) {
+            houseRent.setHouseId(Integer.parseInt(v));
+            houseRent.setUserId(-1);
+            houseRent.setHouseIsrented("N");
+            houseRentService.update(houseRent);
+        }
+        return HttpResult.success();
+    }
+
+    /**
+     * 用户详情页面添加或取消收藏
+     *
+     * @param reqData
+     * @return
+     */
+    @RequestMapping("addOwnCollect")
+    public HttpResult addOwnCollect(@RequestBody String reqData) throws UnsupportedEncodingException {
+        String result = java.net.URLDecoder.decode(reqData, StandardCharsets.UTF_8.name());
+        System.out.println(result);
+        String[] split = result.split("&");
+        String userIdStr = "";
+        String houseIdStr = "";
+
+        for (String v : split) {
+            if (v.contains("user_id=")) {
+                userIdStr = v.replace("user_id=", "");
+            }
+            if (v.contains("house_id")) {
+                houseIdStr = v.replace("house_id=", "");
+            }
+        }
+        int userId = Integer.parseInt(userIdStr);
+        int houseId = Integer.parseInt(houseIdStr);
+
+        Collect collectIsExist = collectService.queryByUserIdAndHouseId(userId, houseId);
+        Collect collect = new Collect();
+        collect.setUserId(userId);
+        collect.setHouseId(houseId);
+
+        if (collectIsExist == null) {
+            //收藏
+            collectService.insert(collect);
+        } else {
+            //取消收藏
+            collectService.deleteById(collectIsExist.getId());
+        }
+        return HttpResult.success(true);
+    }
+
+    /**
+     * 查询收藏
+     *
+     * @param reqData
+     * @return
+     */
+    @RequestMapping("queryOwnCollect")
+    public HttpResult queryOwnCollect(@RequestBody String reqData) throws UnsupportedEncodingException {
+        String result = java.net.URLDecoder.decode(reqData, StandardCharsets.UTF_8.name());
+        System.out.println(result);
+        String[] split = result.split("&");
+        String userIdStr = "";
+        String houseIdStr = "";
+
+        for (String v : split) {
+            if (v.contains("user_id=")) {
+                userIdStr = v.replace("user_id=", "");
+            }
+            if (v.contains("house_id")) {
+                houseIdStr = v.replace("house_id=", "");
+            }
+        }
+        int userId = Integer.parseInt(userIdStr);
+        int houseId = Integer.parseInt(houseIdStr);
+        Collect collect = collectService.queryByUserIdAndHouseId(userId, houseId);
+        boolean res = collect != null;
+        return HttpResult.success(res);
+    }
+
+    /**
+     * 查询个人中心收藏列表
+     *
+     * @param reqData
+     * @return
+     */
+    @RequestMapping("queryOwnCollectList")
+    public HttpResult queryOwnCollectList(@RequestBody String reqData) throws UnsupportedEncodingException {
+        String result = java.net.URLDecoder.decode(reqData, StandardCharsets.UTF_8.name());
+        System.out.println(result);
+        String[] split = result.split("&");
+        String userIdStr = "";
+
+        for (String v : split) {
+            if (v.contains("user_id=")) {
+                userIdStr = v.replace("user_id=", "");
+            }
+        }
+        int userId = Integer.parseInt(userIdStr);
+        Collect collect = new Collect();
+        collect.setUserId(userId);
+        List<Collect> collects = collectService.queryAll(collect);
+        List<HouseRent> res = new ArrayList<>();
+        for (Collect v : collects) {
+            //收藏列表 两种互斥情况
+            HouseRent houseRent = houseRentService.queryById(v.getHouseId());
+            if (houseRent == null) {
+                houseRent = houseRentService.queryByIdISY(v.getHouseId());
+            }
+            res.add(houseRent);
+        }
+        return HttpResult.successForPage(res, res.size());
+    }
+
+    /**
+     * 移除收藏列表
+     *
+     * @param reqData
+     * @return
+     */
+    @RequestMapping("deleteOwnCollectBatchList")
+    public HttpResult deleteOwnCollectBatchList(@RequestBody String reqData) throws UnsupportedEncodingException {
+        String result = java.net.URLDecoder.decode(reqData, StandardCharsets.UTF_8.name());
+        System.out.println(result);
+        String[] split = result.split("&");
+        String userIdStr = "";
+        String houseIdStr = "";
+        String[] splitHouseId = null;
+        for (String v : split) {
+            if (v.contains("user_id=")) {
+                userIdStr = v.replace("user_id=", "");
+            }
+            if (v.contains("house_id=")) {
+                houseIdStr = v.replace("house_id=", "");
+                splitHouseId = houseIdStr.split(",");
+            }
+        }
+        int userId = Integer.parseInt(userIdStr);
+        Collect collect = new Collect();
+        collect.setUserId(userId);
+
+        if (splitHouseId != null) {
+            for (String v : splitHouseId) {
+                collect.setHouseId(Integer.parseInt(v));
+                collectService.deleteByUserIdAndHouseId(collect);
+            }
+        }
+
+        return HttpResult.success(true);
+    }
+
+
+    /**
+     * 移除无效房源
+     *
+     * @param reqData
+     * @return
+     */
+    @RequestMapping("deleteRentHouse")
+    public HttpResult deleteRentHouse(@RequestBody String reqData) throws UnsupportedEncodingException {
+        String result = java.net.URLDecoder.decode(reqData, StandardCharsets.UTF_8.name());
+        System.out.println(result);
+        String[] split = result.split("&");
+        String userIdStr = "";
+        String houseIdStr = "";
+        String[] splitHouseId = null;
+        for (String v : split) {
+            if (v.contains("user_id=")) {
+                userIdStr = v.replace("user_id=", "");
+            }
+            if (v.contains("house_id=")) {
+                houseIdStr = v.replace("house_id=", "");
+                splitHouseId = houseIdStr.split(",");
+            }
+        }
+
+        if (splitHouseId != null) {
+            for (String v : splitHouseId) {
+                houseRentService.deleteById(Integer.parseInt(v));
+            }
+        }
+
+        return HttpResult.success(true);
     }
 }

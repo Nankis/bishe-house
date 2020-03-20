@@ -97,5 +97,9 @@
         delete from cjhouse.collect where id = #{id}
     </delete>
 
+    <delete id="deleteByUserIdAndHouseId">
+        delete from cjhouse.collect where user_id = #{userId} And house_id = #{houseId}
+    </delete>
+
 
 </mapper>

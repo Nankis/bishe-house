@@ -9,7 +9,7 @@ import java.io.Serializable;
  * (User)实体类
  *
  * @author makejava
- * @since 2020-03-01 17:53:28
+ * @since 2020-03-11 17:53:28
  */
 @Component
 public class User implements Serializable {

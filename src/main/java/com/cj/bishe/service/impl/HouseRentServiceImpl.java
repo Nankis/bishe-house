@@ -8,6 +8,7 @@ import com.cj.bishe.service.HousePicService;
 import com.cj.bishe.service.HouseRentService;
 import com.cj.bishe.service.UserService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -53,6 +54,18 @@ public class HouseRentServiceImpl implements HouseRentService {
     @Override
     public List<HouseRent> queryAllByLimit(int offset, int limit) {
         return this.houseRentDao.queryAllByLimit(offset, limit);
+    }
+
+    /**
+     * 查询多条数据 包含全部数据
+     *
+     * @param offset 查询起始位置
+     * @param limit  查询条数
+     * @return 对象列表
+     */
+    @Override
+    public List<HouseRent> queryAllByLimits(int offset, int limit) {
+        return houseRentDao.queryAllByLimits(offset, limit);
     }
 
     @Override
@@ -120,7 +133,11 @@ public class HouseRentServiceImpl implements HouseRentService {
 
     @Override
     public HashMap<String, Object> getDetailHouse(int houseId) {
-        HouseRent house = houseRentDao.queryById(houseId);
+        HouseRent house = houseRentDao.queryByIdISY(houseId);
+        if (house == null) {
+            //租房列表和收藏列表互斥
+            house = houseRentDao.queryByIdY(houseId);
+        }
         HashMap<String, Object> Data = new HashMap<>();
         Data.put("House", house);
         User adminUser = userService.queryById(house.getAdminId());
@@ -146,5 +163,108 @@ public class HouseRentServiceImpl implements HouseRentService {
         return houseRentDao.queryAll(houseRent);
     }
 
+    /**
+     * 发布房屋
+     *
+     * @param str
+     * @return
+     */
+    @Transactional
+    @Override
+    public boolean pubHouse(String str) {
+        String[] split = str.split("&");
+        String title = "";
+        String address = "";
+        String area = "";
+        String rent = "";
+        String pledge = "";
+        String floor = "";
+        String months = "";
+        String shape = "";
+        String direction = "";
+        String detail = "";
+        String userId = "";
+        List<String> imgs = new ArrayList<String>();
+        for (String v : split) {
+            if (v.contains("house[title]=")) {
+                title = v.replace("house[title]=", "");
+            }
+            if (v.contains("house[address]=")) {
+                address = v.replace("house[address]=", "");
+            }
+            if (v.contains("house[area]=")) {
+                area = v.replace("house[area]=", "");
+            }
+            if (v.contains("house[rent]=")) {
+                rent = v.replace("house[rent]=", "");
+            }
+            if (v.contains("house[pledge]=")) {
+                pledge = v.replace("house[pledge]=", "");
+            }
+            if (v.contains("house[floor]=")) {
+                floor = v.replace("house[floor]=", "");
+            }
+            if (v.contains("house[months]=")) {
+                months = v.replace("house[months]=", "");
+            }
+            if (v.contains("house[shape]=")) {
+                shape = v.replace("house[shape]=", "");
+            }
+            if (v.contains("house[direction]=")) {
+                direction = v.replace("house[direction]=", "");
+            }
+            if (v.contains("house[detail]=")) {
+                detail = v.replace("house[detail]=", "");
+            }
+            if (v.contains("userId=")) {
+                userId = v.replace("userId=", "");
+            }
+            if (v.contains("imgs")) {
+                String url = v.substring(v.indexOf("=") + 1);
+                imgs.add(url);
+            }
+        }
+        //校验个参数不能为空
+        if ("".equals(title) || "".equals(address) || "".equals(rent) || "".equals(area) || "".equals(pledge)
+                || "".equals(months) || imgs.size() == 0
+        ) {
+            return false;
+        }
+
+        HouseRent houseRent = new HouseRent();
+        houseRent.setHouseTitle(title);
+        houseRent.setHouseAddress(address);
+        houseRent.setHouseArea(address);
+        houseRent.setHouseRent(Double.parseDouble(rent));
+        houseRent.setHousePledge(Double.parseDouble(pledge));
+        houseRent.setHouseFloor(floor);
+        houseRent.setHouseMonths(Integer.parseInt(months));
+        houseRent.setHouseShape(shape);
+        houseRent.setHouseDirection(direction);
+        houseRent.setHouseDetail(detail);
+        houseRent.setAdminId(Integer.parseInt(userId));
+        houseRent.setHouseCoverpic(imgs.get(0));
+        //未被出租
+        houseRent.setHouseIsrented("N");
+        houseRentDao.insert(houseRent);
+
+        HousePic housePic = new HousePic();
+        housePic.setHouseId(houseRent.getHouseId());
+        for (int i = 1; i < imgs.size(); i++) {
+            housePic.setPicUrl(imgs.get(i));
+            housePicService.insert(housePic);
+        }
+        return true;
+    }
+
+    @Override
+    public HouseRent queryByIdY(Integer houseId) {
+        return houseRentDao.queryByIdY(houseId);
+    }
+
+    @Override
+    public HouseRent queryByIdISY(Integer houseId) {
+        return houseRentDao.queryByIdISY(houseId);
+    }
 
 }

@@ -99,4 +99,10 @@ public class CollectServiceImpl implements CollectService {
         return collectDao.queryByUserIdAndHouseId(collect);
     }
 
+    @Override
+    public int deleteByUserIdAndHouseId(Collect collect) {
+        return collectDao.deleteByUserIdAndHouseId(collect);
+    }
+
+
 }

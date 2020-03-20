@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cj.bishe.dao.OrderDao">
+
+    <resultMap type="com.cj.bishe.entity.Order" id="OrderMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="houseid" column="houseId" jdbcType="INTEGER"/>
+        <result property="price" column="price" jdbcType="NUMERIC"/>
+        <result property="master" column="master" jdbcType="VARCHAR"/>
+        <result property="customer" column="customer" jdbcType="VARCHAR"/>
+        <result property="masterName" column="master_name" jdbcType="VARCHAR"/>
+        <result property="cname" column="cname" jdbcType="VARCHAR"/>
+        <result property="phone" column="phone" jdbcType="VARCHAR"/>
+        <result property="tradeTime" column="trade_time" jdbcType="TIMESTAMP"/>
+        <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+        <result property="deleted" column="deleted" jdbcType="INTEGER"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="OrderMap">
+        select
+          id, houseId, price, master, customer, master_name, cname, phone, trade_time, created_time, deleted, status
+        from cjhouse.order
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="OrderMap">
+        select
+          id, houseId, price, master, customer, master_name, cname, phone, trade_time, created_time, deleted, status
+        from cjhouse.order
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="OrderMap">
+        select
+          id, houseId, price, master, customer, master_name, cname, phone, trade_time, created_time, deleted, status
+        from cjhouse.order
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="houseid != null">
+                and houseId = #{houseid}
+            </if>
+            <if test="price != null">
+                and price = #{price}
+            </if>
+            <if test="master != null and master != ''">
+                and master = #{master}
+            </if>
+            <if test="customer != null and customer != ''">
+                and customer = #{customer}
+            </if>
+            <if test="masterName != null and masterName != ''">
+                and master_name = #{masterName}
+            </if>
+            <if test="cname != null and cname != ''">
+                and cname = #{cname}
+            </if>
+            <if test="phone != null and phone != ''">
+                and phone = #{phone}
+            </if>
+            <if test="tradeTime != null">
+                and trade_time = #{tradeTime}
+            </if>
+            <if test="createdTime != null">
+                and created_time = #{createdTime}
+            </if>
+            <if test="deleted != null">
+                and deleted = #{deleted}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into cjhouse.order(houseId, price, master, customer, master_name, cname, phone, trade_time, created_time, deleted, status)
+        values (#{houseid}, #{price}, #{master}, #{customer}, #{masterName}, #{cname}, #{phone}, NOW(), NOW(), 0, #{status})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update cjhouse.order
+        <set>
+            <if test="houseid != null">
+                houseId = #{houseid},
+            </if>
+            <if test="price != null">
+                price = #{price},
+            </if>
+            <if test="master != null and master != ''">
+                master = #{master},
+            </if>
+            <if test="customer != null and customer != ''">
+                customer = #{customer},
+            </if>
+            <if test="masterName != null and masterName != ''">
+                master_name = #{masterName},
+            </if>
+            <if test="cname != null and cname != ''">
+                cname = #{cname},
+            </if>
+            <if test="phone != null and phone != ''">
+                phone = #{phone},
+            </if>
+            <if test="tradeTime != null">
+                trade_time = #{tradeTime},
+            </if>
+            <if test="createdTime != null">
+                created_time = #{createdTime},
+            </if>
+            <if test="deleted != null">
+                deleted = #{deleted},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from cjhouse.order where id = #{id}
+    </delete>
+
+</mapper>

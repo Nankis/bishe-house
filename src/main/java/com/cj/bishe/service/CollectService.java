@@ -70,4 +70,13 @@ public interface CollectService {
      * @return
      */
     Collect queryByUserIdAndHouseId(int userId, int houseId);
+
+    /**
+     * 通过用户id和houseid删除收藏的房子
+     *
+     * @param collect 实体类
+     * @return 影响行数
+     */
+    int deleteByUserIdAndHouseId(Collect collect);
+
 }

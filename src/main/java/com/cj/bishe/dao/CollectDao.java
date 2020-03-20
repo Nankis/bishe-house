@@ -63,6 +63,15 @@ public interface CollectDao {
      */
     int deleteById(Integer id);
 
+
+    /**
+     * 通过用户id和houseid删除收藏的房子
+     *
+     * @param collect 实体类
+     * @return 影响行数
+     */
+    int deleteByUserIdAndHouseId(Collect collect);
+
     /**
      * 查询是用户是否收藏过该房子
      *

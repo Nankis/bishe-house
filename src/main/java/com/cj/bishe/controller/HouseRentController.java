@@ -1,8 +1,10 @@
 package com.cj.bishe.controller;
 
 import com.cj.bishe.common.HttpResult;
+import com.cj.bishe.common.ImageUtils;
 import com.cj.bishe.entity.HousePic;
 import com.cj.bishe.entity.HouseRent;
+import com.cj.bishe.enums.ResultMsgEnum;
 import com.cj.bishe.service.HousePicService;
 import com.cj.bishe.service.HouseRentService;
 import org.springframework.web.bind.annotation.*;
@@ -49,6 +51,22 @@ public class HouseRentController {
     @RequestMapping("getAllHouseRent")
     public HttpResult getAllHouseRent() {
         List<HouseRent> houseRents = this.houseRentService.queryAllByLimit(0, 999);
+        Map<String, Object> datas = new HashMap<>();
+        datas.put("TotalCount", houseRents.size());//数据条数
+        //封装图片
+        houseRentService.getPic(houseRents);
+        datas.put("_Items", houseRents);
+        return HttpResult.successForPage(datas, houseRents.size());
+    }
+
+    /**
+     * 获取全部数据  包含所有条件
+     *
+     * @return
+     */
+    @RequestMapping("getAllConditionHouse")
+    public HttpResult getAllConditionHouse() {
+        List<HouseRent> houseRents = this.houseRentService.queryAllByLimits(0, 999);
         Map<String, Object> datas = new HashMap<>();
         datas.put("TotalCount", houseRents.size());//数据条数
         //封装图片
@@ -170,7 +188,7 @@ public class HouseRentController {
         //参数格式转换
         int id = 0;
         id = Integer.parseInt(houseId.replace("house_id=", ""));
-        System.out.println(id);
+//        System.out.println("getHouseDetailById"+id);
         HashMap<String, Object> res = houseRentService.getDetailHouse(id);
 
         return HttpResult.successForPage(res, res.size());
@@ -212,5 +230,59 @@ public class HouseRentController {
         return HttpResult.successForPage(Data, Data.size());
 
     }
+
+    /**
+     * 发布房源
+     * 请求参数
+     * house[title]=西青精装修独卫&house[address]=西青区&house[area]=90&house[rent]=1200&house[pledge]=1200&house[floor]=11/20&house[months]=1&house[shape]=套二&house[direction]=东&house[detail]=欢迎来租&imgs[0]=http://q74deg0wd.bkt.clouddn.com/FsTi-XYVU4NPI07ES0tG9xtStfdU&imgs[1]=http://q74deg0wd.bkt.clouddn.com/FlE6db36ZM7gmh_01PATQdnYBTcU&imgs[2]=http://q74deg0wd.bkt.clouddn.com/Fkhg3XEohFmIlfWdkDS88kAUkzFM&userId=2
+     *
+     * @param reqData
+     * @return
+     */
+    @RequestMapping("pubHouse")
+    public HttpResult pubHouse(@RequestBody String reqData) throws UnsupportedEncodingException {
+        String result = java.net.URLDecoder.decode(reqData, StandardCharsets.UTF_8.name());
+        boolean b = houseRentService.pubHouse(result);
+        if (!b) {
+            return HttpResult.fail("555", "数据不能为空！");
+        }
+        return HttpResult.success(b);
+    }
+
+    /**
+     * 租赁房屋
+     * 请求参数：House_id=9&userId=2
+     *
+     * @param reqData
+     * @return
+     * @throws UnsupportedEncodingException
+     */
+    @RequestMapping("rentHouse")
+    public HttpResult rentHouse(@RequestBody String reqData) throws UnsupportedEncodingException {
+        String result = java.net.URLDecoder.decode(reqData, StandardCharsets.UTF_8.name());
+        String[] split = result.split("&");
+        String houseId = "";
+        String userId = "";
+        for (String v : split) {
+            if (v.contains("House_id=")) {
+                houseId = v.replace("House_id=", "");
+            }
+            if (v.contains("userId=")) {
+                userId = v.replace("userId=", "");
+            }
+        }
+
+        if ("".equals(houseId) || "".equals(userId)) {
+            return HttpResult.fail("555", "数据不能为空！");
+        }
+
+        HouseRent houseRent = houseRentService.queryById(Integer.parseInt(houseId));
+        houseRent.setUserId(Integer.parseInt(userId));
+        houseRent.setHouseIsrented("Y");
+        houseRentService.update(houseRent);
+
+        return HttpResult.success(houseRent);
+    }
+
 
 }

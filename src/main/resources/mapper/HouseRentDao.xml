@@ -30,11 +30,33 @@
         select
           House_id, User_id, Admin_id, House_title, House_rent, House_pledge, House_months, House_address, House_shape, House_direction, House_area, House_floor, House_detail, House_jwd, House_isRented, House_coverPic, House_picList, created_time, updated_time, status
         from cjhouse.house_rent
-        where House_id = #{houseId}
+        where House_id = #{houseId} and House_isRented='N'
+    </select>
+
+    <select id="queryByIdY" resultMap="HouseRentMap">
+        select
+          House_id, User_id, Admin_id, House_title, House_rent, House_pledge, House_months, House_address, House_shape, House_direction, House_area, House_floor, House_detail, House_jwd, House_isRented, House_coverPic, House_picList, created_time, updated_time, status
+        from cjhouse.house_rent
+        where House_id = #{houseId} and House_isRented  <![CDATA[ <> ]]>  'Y'
+    </select>
+
+    <select id="queryByIdISY" resultMap="HouseRentMap">
+        select
+          House_id, User_id, Admin_id, House_title, House_rent, House_pledge, House_months, House_address, House_shape, House_direction, House_area, House_floor, House_detail, House_jwd, House_isRented, House_coverPic, House_picList, created_time, updated_time, status
+        from cjhouse.house_rent
+        where House_id = #{houseId} and House_isRented = 'Y'
     </select>
 
     <!--查询指定行数据-->
     <select id="queryAllByLimit" resultMap="HouseRentMap">
+        select
+          House_id, User_id, Admin_id, House_title, House_rent, House_pledge, House_months, House_address, House_shape, House_direction, House_area, House_floor, House_detail, House_jwd, House_isRented, House_coverPic, House_picList, created_time, updated_time, status
+        from cjhouse.house_rent
+        where House_isRented = 'N'
+        limit #{offset}, #{limit}
+    </select>
+
+    <select id="queryAllByLimits" resultMap="HouseRentMap">
         select
           House_id, User_id, Admin_id, House_title, House_rent, House_pledge, House_months, House_address, House_shape, House_direction, House_area, House_floor, House_detail, House_jwd, House_isRented, House_coverPic, House_picList, created_time, updated_time, status
         from cjhouse.house_rent
@@ -49,6 +71,7 @@
         House_rent BETWEEN #{rent1} AND #{rent2}
          AND
         house_months BETWEEN #{month1} AND #{month2}
+         AND House_isRented = 'N'
     </select>
 
     <!--通过实体作为筛选条件查询-->
@@ -189,13 +212,18 @@
             <if test="status != null and status != ''">
                 and status = #{status}
             </if>
+            and House_isRented = 'N'
         </where>
     </select>
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="houseId" useGeneratedKeys="true">
+        <selectKey resultType="java.lang.Integer" keyProperty="houseId" order="AFTER">
+            SELECT
+            LAST_INSERT_ID()
+        </selectKey>
         insert into cjhouse.house_rent(User_id, Admin_id, House_title, House_rent, House_pledge, House_months, House_address, House_shape, House_direction, House_area, House_floor, House_detail, House_jwd, House_isRented, House_coverPic, House_picList, created_time, updated_time, status)
-        values (#{userId}, #{adminId}, #{houseTitle}, #{houseRent}, #{housePledge}, #{houseMonths}, #{houseAddress}, #{houseShape}, #{houseDirection}, #{houseArea}, #{houseFloor}, #{houseDetail}, #{houseJwd}, #{houseIsrented}, #{houseCoverpic}, #{housePiclist}, #{createdTime}, #{updatedTime}, #{status})
+        values (#{userId}, #{adminId}, #{houseTitle}, #{houseRent}, #{housePledge}, #{houseMonths}, #{houseAddress}, #{houseShape}, #{houseDirection}, #{houseArea}, #{houseFloor}, #{houseDetail}, #{houseJwd}, #{houseIsrented}, #{houseCoverpic}, #{housePiclist}, NOW(), #{updatedTime}, 0)
     </insert>
 
     <!--通过主键修改数据-->
