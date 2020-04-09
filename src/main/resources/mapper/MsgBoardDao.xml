@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.cj.bishe.dao.MsgBoardDao">
+<mapper namespace="com.lrs.bishe.dao.MsgBoardDao">
 
-    <resultMap type="com.cj.bishe.entity.MsgBoard" id="MsgBoardMap">
+    <resultMap type="com.lrs.bishe.entity.MsgBoard" id="MsgBoardMap">
         <result property="id" column="id" jdbcType="INTEGER"/>
         <result property="user" column="user" jdbcType="VARCHAR"/>
         <result property="msg" column="msg" jdbcType="VARCHAR"/>
@@ -19,7 +19,7 @@
     <select id="queryById" resultMap="MsgBoardMap">
         select
           id, user, msg, pub_time, num, created_time, modified_time, deleted, status, houseId
-        from cjhouse.msg_board
+        from lrshouse.msg_board
         where id = #{id}
     </select>
 
@@ -27,7 +27,7 @@
     <select id="queryAllByLimit" resultMap="MsgBoardMap">
         select
           id, user, msg, pub_time, num, created_time, modified_time, deleted, status, houseId
-        from cjhouse.msg_board
+        from lrshouse.msg_board
         limit #{offset}, #{limit}
     </select>
 
@@ -35,7 +35,7 @@
     <select id="queryAll" resultMap="MsgBoardMap">
         select
           id, user, msg, pub_time, num, created_time, modified_time, deleted, status, houseId
-        from cjhouse.msg_board
+        from lrshouse.msg_board
         <where>
             <if test="id != null">
                 and id = #{id}
@@ -72,13 +72,13 @@
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">
-        insert into cjhouse.msg_board(user, msg, pub_time, num, created_time, modified_time, deleted, status, houseId)
+        insert into lrshouse.msg_board(user, msg, pub_time, num, created_time, modified_time, deleted, status, houseId)
         values (#{user}, #{msg}, #{pubTime}, #{num}, NOW(), #{modifiedTime}, 0, #{status}, #{houseid})
     </insert>
 
     <!--通过主键修改数据-->
     <update id="update">
-        update cjhouse.msg_board
+        update lrshouse.msg_board
         <set>
             <if test="user != null and user != ''">
                 user = #{user},
@@ -113,7 +113,7 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from cjhouse.msg_board where id = #{id}
+        delete from lrshouse.msg_board where id = #{id}
     </delete>
 
 </mapper>

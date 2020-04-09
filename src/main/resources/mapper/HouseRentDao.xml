@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.cj.bishe.dao.HouseRentDao">
+<mapper namespace="com.lrs.bishe.dao.HouseRentDao">
 
-    <resultMap type="com.cj.bishe.entity.HouseRent" id="HouseRentMap">
+    <resultMap type="com.lrs.bishe.entity.HouseRent" id="HouseRentMap">
         <result property="houseId" column="House_id" jdbcType="INTEGER"/>
         <result property="userId" column="User_id" jdbcType="INTEGER"/>
         <result property="adminId" column="Admin_id" jdbcType="INTEGER"/>
@@ -29,21 +29,21 @@
     <select id="queryById" resultMap="HouseRentMap">
         select
           House_id, User_id, Admin_id, House_title, House_rent, House_pledge, House_months, House_address, House_shape, House_direction, House_area, House_floor, House_detail, House_jwd, House_isRented, House_coverPic, House_picList, created_time, updated_time, status
-        from cjhouse.house_rent
+        from lrshouse.house_rent
         where House_id = #{houseId} and House_isRented='N'
     </select>
 
     <select id="queryByIdY" resultMap="HouseRentMap">
         select
           House_id, User_id, Admin_id, House_title, House_rent, House_pledge, House_months, House_address, House_shape, House_direction, House_area, House_floor, House_detail, House_jwd, House_isRented, House_coverPic, House_picList, created_time, updated_time, status
-        from cjhouse.house_rent
+        from lrshouse.house_rent
         where House_id = #{houseId} and House_isRented  <![CDATA[ <> ]]>  'Y'
     </select>
 
     <select id="queryByIdISY" resultMap="HouseRentMap">
         select
           House_id, User_id, Admin_id, House_title, House_rent, House_pledge, House_months, House_address, House_shape, House_direction, House_area, House_floor, House_detail, House_jwd, House_isRented, House_coverPic, House_picList, created_time, updated_time, status
-        from cjhouse.house_rent
+        from lrshouse.house_rent
         where House_id = #{houseId} and House_isRented = 'Y'
     </select>
 
@@ -51,7 +51,7 @@
     <select id="queryAllByLimit" resultMap="HouseRentMap">
         select
           House_id, User_id, Admin_id, House_title, House_rent, House_pledge, House_months, House_address, House_shape, House_direction, House_area, House_floor, House_detail, House_jwd, House_isRented, House_coverPic, House_picList, created_time, updated_time, status
-        from cjhouse.house_rent
+        from lrshouse.house_rent
         where House_isRented = 'N'
         limit #{offset}, #{limit}
     </select>
@@ -59,14 +59,14 @@
     <select id="queryAllByLimits" resultMap="HouseRentMap">
         select
           House_id, User_id, Admin_id, House_title, House_rent, House_pledge, House_months, House_address, House_shape, House_direction, House_area, House_floor, House_detail, House_jwd, House_isRented, House_coverPic, House_picList, created_time, updated_time, status
-        from cjhouse.house_rent
+        from lrshouse.house_rent
         limit #{offset}, #{limit}
     </select>
 
     <select id="queryAllByRentOrMonths" resultMap="HouseRentMap">
         select
           House_id, User_id, Admin_id, House_title, House_rent, House_pledge, House_months, House_address, House_shape, House_direction, House_area, House_floor, House_detail, House_jwd, House_isRented, House_coverPic, House_picList, created_time, updated_time, status
-        from cjhouse.house_rent
+        from lrshouse.house_rent
         where
         House_rent BETWEEN #{rent1} AND #{rent2}
          AND
@@ -80,7 +80,7 @@
         House_id, User_id, Admin_id, House_title, House_rent, House_pledge, House_months, House_address, House_shape,
         House_direction, House_area, House_floor, House_detail, House_jwd, House_isRented, House_coverPic,
         House_picList, created_time, updated_time, status
-        from cjhouse.house_rent
+        from lrshouse.house_rent
         <where>
             <if test="houseId != null">
                 and House_id = #{houseId}
@@ -150,7 +150,7 @@
         House_id, User_id, Admin_id, House_title, House_rent, House_pledge, House_months, House_address, House_shape,
         House_direction, House_area, House_floor, House_detail, House_jwd, House_isRented, House_coverPic,
         House_picList, created_time, updated_time, status
-        from cjhouse.house_rent
+        from lrshouse.house_rent
         <where>
             <if test="houseId != null">
                 and House_id = #{houseId}
@@ -222,13 +222,13 @@
             SELECT
             LAST_INSERT_ID()
         </selectKey>
-        insert into cjhouse.house_rent(User_id, Admin_id, House_title, House_rent, House_pledge, House_months, House_address, House_shape, House_direction, House_area, House_floor, House_detail, House_jwd, House_isRented, House_coverPic, House_picList, created_time, updated_time, status)
+        insert into lrshouse.house_rent(User_id, Admin_id, House_title, House_rent, House_pledge, House_months, House_address, House_shape, House_direction, House_area, House_floor, House_detail, House_jwd, House_isRented, House_coverPic, House_picList, created_time, updated_time, status)
         values (#{userId}, #{adminId}, #{houseTitle}, #{houseRent}, #{housePledge}, #{houseMonths}, #{houseAddress}, #{houseShape}, #{houseDirection}, #{houseArea}, #{houseFloor}, #{houseDetail}, #{houseJwd}, #{houseIsrented}, #{houseCoverpic}, #{housePiclist}, NOW(), #{updatedTime}, 0)
     </insert>
 
     <!--通过主键修改数据-->
     <update id="update">
-        update cjhouse.house_rent
+        update lrshouse.house_rent
         <set>
             <if test="userId != null">
                 User_id = #{userId},
@@ -293,7 +293,7 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from cjhouse.house_rent where House_id = #{houseId}
+        delete from lrshouse.house_rent where House_id = #{houseId}
     </delete>
 
 </mapper>

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.cj.bishe.dao.CollectDao">
+<mapper namespace="com.lrs.bishe.dao.CollectDao">
 
-    <resultMap type="com.cj.bishe.entity.Collect" id="CollectMap">
+    <resultMap type="com.lrs.bishe.entity.Collect" id="CollectMap">
         <result property="id" column="id" jdbcType="INTEGER"/>
         <result property="userId" column="user_id" jdbcType="INTEGER"/>
         <result property="houseId" column="house_id" jdbcType="INTEGER"/>
@@ -16,28 +16,28 @@
     <select id="queryById" resultMap="CollectMap">
         select
           id, user_id, house_id, created_time, modified_time, deleted, status
-        from cjhouse.collect
+        from lrshouse.collect
         where id = #{id}
     </select>
 
     <select id="queryByUserIdAndHouseId" resultMap="CollectMap">
         select
           id, user_id, house_id, created_time, modified_time, deleted, status
-        from cjhouse.collect
+        from lrshouse.collect
         where user_id = #{userId} and house_id = #{houseId}
     </select>
 
     <select id="queryAllByLimit" resultMap="CollectMap">
         select
           id, user_id, house_id, created_time, modified_time, deleted, status
-        from cjhouse.collect
+        from lrshouse.collect
         limit #{offset}, #{limit}
     </select>
 
     <select id="queryAll" resultMap="CollectMap">
         select
         id, user_id, house_id, created_time, modified_time, deleted, status
-        from cjhouse.collect
+        from lrshouse.collect
         <where>
             <if test="id != null">
                 and id = #{id}
@@ -64,12 +64,12 @@
     </select>
 
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">
-        insert into cjhouse.collect(user_id, house_id, created_time, modified_time, deleted, status)
+        insert into lrshouse.collect(user_id, house_id, created_time, modified_time, deleted, status)
         values (#{userId}, #{houseId}, NOW(), #{modifiedTime}, 0, 0)
     </insert>
 
     <update id="update">
-        update cjhouse.collect
+        update lrshouse.collect
         <set>
             <if test="userId != null">
                 user_id = #{userId},
@@ -94,11 +94,11 @@
     </update>
 
     <delete id="deleteById">
-        delete from cjhouse.collect where id = #{id}
+        delete from lrshouse.collect where id = #{id}
     </delete>
 
     <delete id="deleteByUserIdAndHouseId">
-        delete from cjhouse.collect where user_id = #{userId} And house_id = #{houseId}
+        delete from lrshouse.collect where user_id = #{userId} And house_id = #{houseId}
     </delete>
 
 

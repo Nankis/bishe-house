@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.cj.bishe.dao.UserDao">
+<mapper namespace="com.lrs.bishe.dao.UserDao">
 
-    <resultMap type="com.cj.bishe.entity.User" id="UserMap">
+    <resultMap type="com.lrs.bishe.entity.User" id="UserMap">
         <result property="id" column="id" jdbcType="INTEGER"/>
         <result property="username" column="username" jdbcType="VARCHAR"/>
         <result property="pwd" column="pwd" jdbcType="VARCHAR"/>
@@ -19,7 +19,7 @@
     <select id="queryById" resultMap="UserMap">
         select
           id, username, pwd, money, type,  created_time, modified_time, deleted, status, name
-        from cjhouse.user
+        from lrshouse.user
         where id = #{id}
     </select>
 
@@ -27,7 +27,7 @@
     <select id="queryByUserName" resultMap="UserMap">
         select
           id, username, pwd, money, type, created_time, modified_time, deleted, status, name
-        from cjhouse.user
+        from lrshouse.user
         where username = #{username}
     </select>
 
@@ -35,7 +35,7 @@
     <select id="queryAllByLimit" resultMap="UserMap">
         select
           id, username, pwd, money, type,  created_time, modified_time, deleted, status, name
-        from cjhouse.user
+        from lrshouse.user
         limit #{offset}, #{limit}
     </select>
 
@@ -43,7 +43,7 @@
     <select id="queryAll" resultMap="UserMap">
         select
         id, username, pwd, money, type, created_time, modified_time, deleted, status, name
-        from cjhouse.user
+        from lrshouse.user
         <where>
             <if test="id != null">
                 and id = #{id}
@@ -80,13 +80,13 @@
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">
-        insert into cjhouse.user(username, pwd, money, type, created_time, modified_time, deleted, status, name)
+        insert into lrshouse.user(username, pwd, money, type, created_time, modified_time, deleted, status, name)
         values (#{username}, #{pwd}, #{money}, #{type},NOW(), #{modifiedTime}, 0, 0, #{name})
     </insert>
 
     <!--通过主键修改数据-->
     <update id="update">
-        update cjhouse.user
+        update lrshouse.user
         <set>
             <if test="username != null and username != ''">
                 username = #{username},
@@ -116,7 +116,7 @@
 
     <!--通过用户名修改数据-->
     <update id="updateUserByUserName">
-        update cjhouse.user
+        update lrshouse.user
         <set>
             <if test="pwd != null and pwd != ''">
                 pwd = #{pwd},
@@ -143,7 +143,7 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from cjhouse.user where id = #{id}
+        delete from lrshouse.user where id = #{id}
     </delete>
 
 </mapper>
